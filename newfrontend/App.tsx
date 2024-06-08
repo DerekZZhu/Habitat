@@ -2,14 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { getFirestore, setDoc, doc } from '@firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -22,8 +15,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
+const AuthScreen = ({ email, setEmail, password, setPassword, username, setUsername, isLogin, setIsLogin, handleAuthentication }) => {
   return (
     <View style={styles.authContainer}>
        <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
@@ -42,6 +36,14 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         placeholder="Password"
         secureTextEntry
       />
+      {!isLogin && (
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Username"
+        />
+      )}
       <View style={styles.buttonContainer}>
         <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
       </View>
@@ -55,7 +57,6 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );
 }
 
-
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
     <View style={styles.authContainer}>
@@ -65,9 +66,11 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
     </View>
   );
 };
+
 export default App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
 
@@ -80,7 +83,6 @@ export default App = () => {
     return () => unsubscribe();
   }, [auth]);
 
-  
   const handleAuthentication = async () => {
     try {
       if (user) {
@@ -95,8 +97,14 @@ export default App = () => {
           console.log('User signed in successfully!');
         } else {
           // Sign up
-          await createUserWithEmailAndPassword(auth, email, password);
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
+          // Save the username to Firestore
+          const userId = userCredential.user.uid;
+          await setDoc(doc(db, "users", userId), {
+            username: username,
+            email: email,
+          });
         }
       }
     } catch (error) {
@@ -116,6 +124,8 @@ export default App = () => {
           setEmail={setEmail}
           password={password}
           setPassword={setPassword}
+          username={username}
+          setUsername={setUsername}
           isLogin={isLogin}
           setIsLogin={setIsLogin}
           handleAuthentication={handleAuthentication}
@@ -124,6 +134,7 @@ export default App = () => {
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
