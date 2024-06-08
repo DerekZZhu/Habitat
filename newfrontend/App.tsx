@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
-import { getFirestore, setDoc, doc } from '@firebase/firestore';
+import { getFirestore } from '@firebase/firestore';
+import { getDatabase, ref, set } from '@firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -15,7 +16,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = getDatabase(app);
 
 const AuthScreen = ({ email, setEmail, password, setPassword, username, setUsername, isLogin, setIsLogin, handleAuthentication }) => {
   return (
@@ -96,14 +97,15 @@ export default App = () => {
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
         } else {
-          // Sign up
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
-          // Save the username to Firestore
           const userId = userCredential.user.uid;
-          await setDoc(doc(db, "users", userId), {
+          await set(ref(db, 'users/' + userId), {
             username: username,
             email: email,
+            habits: [],
+            friends: [],
+            daily_streaks: 0
           });
         }
       }
@@ -111,7 +113,6 @@ export default App = () => {
       console.error('Authentication error:', error.message);
     }
   };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {user ? (
