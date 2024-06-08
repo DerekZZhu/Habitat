@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable, Keybo
 import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
+
   
 import {
   Colors,
@@ -11,6 +12,9 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import { getFirestore, setDoc, doc } from '@firebase/firestore';
+
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -23,15 +27,16 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors}) => {
+
+const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
   return ( 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
     <View className='flex flex-col items-center h-screen bg-[#FFFFFF] p-8'>    
       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto'>Welcome to</Text>
       <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto'>Habitat</Text>           
        <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>    
-
        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
        <TextInput
         className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
@@ -52,8 +57,16 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         selectionColor={'#344E41'}
         secureTextEntry={true}
       />
+
       </TouchableWithoutFeedback>
-  
+        {!isLogin && (
+        <TextInput
+          style={styles.input}
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Username"
+        />
+      )}
 
       <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
       <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
@@ -137,7 +150,6 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );      
 }
 
-
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
     <View >
@@ -147,9 +159,11 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
     </View>
   );
 };
+
 export default App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
   const [errors, setErrors] = useState({}); 
@@ -183,7 +197,7 @@ export default App = () => {
     setErrors(errors);
     setIsFormValid(Object.keys(errors).length === 0 && Object.keys(empty).length === 0);
   }
-  
+
   const handleAuthentication = async () => {
     try {
       if (user) {
@@ -198,8 +212,14 @@ export default App = () => {
           console.log('User signed in successfully!');
         } else {
           // Sign up
-          await createUserWithEmailAndPassword(auth, email, password);
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
+          // Save the username to Firestore
+          const userId = userCredential.user.uid;
+          await setDoc(doc(db, "users", userId), {
+            username: username,
+            email: email,
+          });
         }
       }
     } catch (error) {
@@ -220,6 +240,8 @@ export default App = () => {
           setEmail={setEmail}
           password={password}
           setPassword={setPassword}
+          username={username}
+          setUsername={setUsername}
           isLogin={isLogin}
           setIsLogin={setIsLogin}
           handleAuthentication={handleAuthentication}
