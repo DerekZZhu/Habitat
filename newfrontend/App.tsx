@@ -37,7 +37,7 @@ const Tab = createBottomTabNavigator();
 // const db = getDatabase(app);
 
 const AuthScreen = ({
-  email: email,
+  email,
   setEmail,
   password,
   setPassword,
@@ -123,76 +123,76 @@ const AuthScreen = ({
             </Text>
           </View>
         </View>
-        
-      </View> 
+
         
       <Svg 
-        className='absolute -bottom-16 right-0 z-0' 
-        width={393}
-        height={268}
-        viewBox="0 0 393 268"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <G clipPath="url(#clip0_1429_626)">
-          <Path fill="#fff" d="M0 0H393V268H0z" /> 
-          <G filter="url(#filter0_d_1429_626)">
-            <Ellipse
-              cx={135.375}
-              cy={282.225}
-              rx={340.031}
-              ry={237.421}
-              transform="rotate(27.655 135.375 282.225)"
-              fill="#344E41"
-            />
-          </G>
-          <G filter="url(#filter1_d_1429_626)">
-            <Ellipse
-              cx={134.431}
-              cy={310.236}
-              rx={340.031}
-              ry={237.421}
-              transform="rotate(27.655 134.431 310.236)"
-              fill="#3A5A4B"
-            />
-          </G>
-          <G filter="url(#filter2_d_1429_626)">
-            <Ellipse
-              cx={137.026}
-              cy={339.841}
-              rx={340.031}
-              ry={237.967}
-              transform="rotate(27.655 137.026 339.841)"
-              fill="#578163"
-            />
-          </G>
-          <G filter="url(#filter3_d_1429_626)">
-            <Ellipse
-              cx={127.836}
-              cy={370.518}
-              rx={340.031}
-              ry={237.421}
-              transform="rotate(27.655 127.836 370.518)"
-              fill="#8AB197"
-            />
-          </G>
-          <G filter="url(#filter4_d_1429_626)">
-            <Ellipse
-              cx={113.627}
-              cy={403.436}
-              rx={340.031}
-              ry={237.421}
-              transform="rotate(27.655 113.627 403.436)"
-              fill="#fff"
-            />
-          </G>
+      className='absolute -bottom-16 right-0 z-0' 
+      width={393}
+      height={268}
+      viewBox="0 0 393 268"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <G clipPath="url(#clip0_1429_626)">
+        <Path fill="#fff" d="M0 0H393V268H0z" /> 
+        <G filter="url(#filter0_d_1429_626)">
+          <Ellipse
+            cx={135.375}
+            cy={282.225}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 135.375 282.225)"
+            fill="#344E41"
+          />
         </G>
-        <Defs>
-          <ClipPath id="clip0_1429_626">
-            <Path fill="#fff" d="M0 0H393V268H0z" />
-          </ClipPath>
-        </Defs>
-      </Svg>     
+        <G filter="url(#filter1_d_1429_626)">
+          <Ellipse
+            cx={134.431}
+            cy={310.236}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 134.431 310.236)"
+            fill="#3A5A4B"
+          />
+        </G>
+        <G filter="url(#filter2_d_1429_626)">
+          <Ellipse
+            cx={137.026}
+            cy={339.841}
+            rx={340.031}
+            ry={237.967}
+            transform="rotate(27.655 137.026 339.841)"
+            fill="#578163"
+          />
+        </G>
+        <G filter="url(#filter3_d_1429_626)">
+          <Ellipse
+            cx={127.836}
+            cy={370.518}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 127.836 370.518)"
+            fill="#8AB197"
+          />
+        </G>
+        <G filter="url(#filter4_d_1429_626)">
+          <Ellipse
+            cx={113.627}
+            cy={403.436}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 113.627 403.436)"
+            fill="#fff"
+          />
+        </G>
+      </G>
+      <Defs>
+        <ClipPath id="clip0_1429_626">
+          <Path fill="#fff" d="M0 0H393V268H0z" />
+        </ClipPath>
+      </Defs>
+    </Svg>     
+    </View>
     </TouchableWithoutFeedback>
   );
 };
