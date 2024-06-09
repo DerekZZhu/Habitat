@@ -12,21 +12,7 @@ import { getDatabase, ref, set, get, child } from '@firebase/database';
 // import GoogleAuth from "./GoogleAuth.tsx"
 import { Canvas, useFrame } from '@react-three/fiber'
 
-const firebaseConfig = {     
-  apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
-  authDomain: "habitat-9f1ab.firebaseapp.com",
-  projectId: "habitat-9f1ab",
-  storageBucket: "habitat-9f1ab.appspot.com",
-  messagingSenderId: "497983486268",
-  appId: "1:497983486268:web:8df0c6543fe02e9443c639",
-  measurementId: "G-H31Q7QJM4E"
-};
-
 const Tab = createBottomTabNavigator();
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
   
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
@@ -251,41 +237,26 @@ export default App = () => {
 
   const handleAuthentication = async () => {
     try {
-      if (user) {
-        console.log('User logged out successfully!');
-        await signOut(auth);
-      } else {
-        if (isLogin) {
-          await signInWithEmailAndPassword(auth, email, password);
-          console.log('User signed in successfully!');
-        } else {
-          const usernameExists = await checkUsernameExists(username);
-          if (usernameExists) {
-            setErrors(prevErrors => ({ ...prevErrors, username: 'Username is already taken' }));
-            return;
-          }
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          console.log('User created successfully!');
-          const userId = userCredential.user.uid;
-          await set(ref(db, 'users/' + userId), {
-            username: username,
-            userId: userId,
-            email: email,
-            habits: {},
-            friends: [],
-            daily_streak: 0
-          });
-          await set(ref(db, 'usernames/' + username), true);
+        const response = await fetch('http://127.0.0.1:8000/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                username: isLogin ? null : username,
+                is_login: isLogin
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || 'Something went wrong');
         }
-      }
+        console.log(data.message);
     } catch (error) {
-      console.error('Authentication error:', error.message);
+        console.error('Authentication error:', error.message);
     }
-  };
-  const checkUsernameExists = async (username) => {
-    const dbRef = ref(getDatabase());
-    const snapshot = await get(child(dbRef, `usernames/${username}`));
-    return snapshot.exists();
   };
 
 

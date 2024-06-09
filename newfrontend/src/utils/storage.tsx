@@ -21,6 +21,16 @@ const init_ = async (username, userId, email) => {
                  "friends": [],
                  "daily_streak": 0
                 }
+
+    const postData = async () => {
+        try {
+            const response = await axios.post(API_URL, user_data);
+            setData(response.data);
+        } catch (error) {
+            console.error('Error posting data:', error);
+        }
+    };
+
     try {
         await AsyncStorage.setItem("user_data", user_data)
     } catch (error) {
