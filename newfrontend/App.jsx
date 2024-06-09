@@ -144,9 +144,8 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
-      <View className='flex flex-row h-screen bg-[#FFFFFF] p-8'>     
-        <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41]   mt-12'>Habitat</Text>            
-
+      <View className='flex flex-row h-screen bg-[#FFFFFF] p-8 '>     
+        <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left    mt-12'>Habitat</Text>            
       </View>
     </TouchableWithoutFeedback>
   );
