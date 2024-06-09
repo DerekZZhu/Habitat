@@ -26,49 +26,59 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
     <View className='flex flex-col items-center h-screen bg-[#FFFFFF] p-8'>    
       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto'>Welcome to</Text>
       <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto'>Habitat</Text>           
-       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>    
-       <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
-       <TextInput
-        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        selectionColor={'#344E41'} 
-        autoCapitalize="none"
-        
-      />
-      <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <TextInput
-        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        selectionColor={'#344E41'}
-        secureTextEntry={true}
-      />
-
-      </TouchableWithoutFeedback>
-        {!isLogin && (
-        <TextInput
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Username"
+       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>   
+       <View className='relative z-20 w-full h-full'>   
+        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
+        <TextInput 
+          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          selectionColor={'#344E41'} 
+          autoCapitalize="none"
+          
         />
-      )}
+        {!isLogin && (
+          <> 
+            <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Username</Text>
+            <TextInput
+              className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+              value={username}
+              onChangeText={setUsername}
+              placeholder="Username"
+              selectionColor={'#344E41'}
+              autoCapitalize="none"
+            />
+          </>
+        )}
+        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TextInput
+          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+          selectionColor={'#344E41'}
+          secureTextEntry={true}
+        />
 
-      <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
-      <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
-        <Text onPress={handleAuthentication} className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
-      </Pressable>
+        </TouchableWithoutFeedback>
 
-      <View>
-        <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
-          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-        </Text> 
-      </View>
-      <Svg
-      className='absolute bottom-0 right-0 z-0 mt-24'
+        <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>     
+        <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
+          <Text onPress={handleAuthentication} className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
+        </Pressable>
+
+        <View className='mx-auto'>
+          <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
+            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+          </Text> 
+        </View>
+        
+      </View> 
+        
+      <Svg 
+      className='absolute -bottom-16 right-0 z-0' 
       width={393}
       height={268}
       viewBox="0 0 393 268"
