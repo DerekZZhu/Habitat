@@ -4,7 +4,7 @@ import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
-import { Menu, Flower, Leaf, Group, GroupIcon, Users, Settings, Flame, PlusCircle } from 'lucide-react-native';
+import { Menu, Flower, Leaf, Group, GroupIcon, Users, Settings, Flame, PlusCircle, Sprout } from 'lucide-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
@@ -168,37 +168,33 @@ const HomeScreen = () => {
       <View className='flex flex-row items-center justify-between w-full mt-10 p-8 pb-4 '>
         <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left'>Habitat</Text>  
         <View className='flex flex-row items-center justify-between -mr-2'>     
-          <Pressable className='flex flex-row items-center justify-center m-1' onPress={() => SheetManager.show('habit-sheet')}>
-            <PlusCircle className='text-[#344E41]' strokeWidth={2} size={32} />  
-          </Pressable>   
- 
           <Pressable className='flex flex-row items-center justify-center m-1'>
             <Settings className='text-[#344E41]' strokeWidth={2} size={32} />
           </Pressable> 
-        </View>          
+        </View>           
       </View>   
       <ScrollView className='bg-[#FFFFFF] relative' contentContainerStyle={{ flexGrow: 1 }}>
 
         {/* // Garden Space */}
-        <View className='flex flex-col items-center justify-center w-full h-1/2 bg-neutral-100 border border-neutral-200  '>
+        <View className='flex flex-col items-center justify-center w-full h-full bg-neutral-100 border border-neutral-200  '>
 
-        </View> 
+        </View>  
 
-        <View className='flex flex-row items-center justify-between w-full mt-4 gap-2'>
-          <Text className='text-2xl italic -tracking-[1.0em] font-bold text-[#344E41] text-left'>Daily Streak</Text> 
-          <Text className='text-2xl italic -tracking-[1.0em] font-bold text-[#344E41] text-left'>0</Text>
-        </View> 
+        <Pressable className='flex flex-row items-center justify-center m-1' onPress={() => SheetManager.show('habit-create-sheet')}>
+          <View className='p-4 absolute bottom-[78px] right-0  '>
+            <View className='bg-[#344E41] flex flex-row items-center w-fit rounded-full aspect-square h-14 justify-center '> 
+              <Sprout className='text-white mx-2' strokeWidth={1.8} size={32} />     
+            </View>     
+          </View> 
+        </Pressable> 
       </ScrollView>
     </View>
-  );
+  ); 
 };
 
 
  
 const Habits = () => { 
-
-
-  SheetManager.show('habit-sheet'); 
 
   // update with real user functions
 

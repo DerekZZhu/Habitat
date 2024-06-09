@@ -42,12 +42,35 @@ function HabitExploreSheet(props: SheetProps<"habit-explore-sheet">) {
   );
 }
 
+function HabbitCreateSheet() {
+  // call database to set the habit
+
+  return (
+    <ActionSheet id='habit-create-sheet' closable containerStyle={{height: 500, borderRadius: 32}} gestureEnabled={true}
+    headerAlwaysVisible={false}
+    initialOffsetFromBottom={2}
+    indicatorStyle={{
+      width: 50, 
+      height: 4.81, 
+      marginTop: 10,
+      marginBottom: 15,
+      borderRadius: 2,
+    }}>
+      <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 32}}> 
+        <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 16, color: '#344E41'}}>Create a new habit</Text> 
+        
+      </View>
+    </ActionSheet>
+  );
+}
+
 
   
 
 
 registerSheet('habit-sheet', HabitSheet);
 registerSheet('habit-explore-sheet', HabitExploreSheet); 
+registerSheet('habit-create-sheet', HabbitCreateSheet); 
  
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -65,6 +88,7 @@ declare module 'react-native-actions-sheet' {
         completed: boolean;
       };
     }>
+    'habit-create-sheet': SheetDefinition; 
   }  
 }
 
