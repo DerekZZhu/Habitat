@@ -206,57 +206,72 @@ const Habits = () => {
       description: 'Go for a run',
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 3,
       streak: 3,
       frequency: 'Daily',
-      completed: false
+      completed: false,
+      isPrivate: false,
+      
     }, {
       name: 'Sleep 8 Hours',
       description: 'Get a good night sleep every night',
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 3,
       streak: 2,
       frequency: 'Daily',
-      completed: false 
+      completed: false,
+      isPrivate: true
     }, {
       name: 'Less Screen Time',
       description: 'Get less than 3 hours of screen time', 
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 2,
       streak: 2,
       frequency: 'Daily',
-      completed: false 
+      completed: false,
+      isPrivate: false
     },{
       name: 'Drink Water',
       description: 'Drink 8 cups of water a day',
       dayCreated: '2024-05-01', 
       totalDaysSinceCreation: 5,
+      daysWatered: 3,
       streak: 3,
       frequency: 'Daily',
-      completed: false
+      completed: false,
+      isPrivate: true
     },{ 
       name: 'Read',
       description: 'Read a chapter of a book',
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 5,
       streak: 5,
       frequency: 'Daily',
-      completed: false
+      completed: false,
+      isPrivate: false
     }, {
       name: 'Meditate',
       description: 'Meditate for 10 minutes',
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 5,
       streak: 5,
       frequency: 'Daily',
-      completed: false
+      completed: false,
+      isPrivate: true
     }, { 
       name: 'No More Gooning',
       description: 'Stop the gooning',
       dayCreated: '2024-05-01',
       totalDaysSinceCreation: 5,
+      daysWatered: 0,
       streak: 0,
       frequency: 'Daily',
-      completed: false 
+      completed: false,
+      isPrivate: true
     },],
     friends: [],
     daily_streaks: 0
@@ -273,7 +288,7 @@ const Habits = () => {
         <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>Check them off by clicking the leaf or the habit itself.</Text> 
         {user.habits.map((habit: any, index: number) => (  
           <View onTouchEnd={() => SheetManager.show('habit-explore-sheet', {
-            payload: { name: habit.name, description: habit.description, dayCreated: habit.dayCreated, totalDaysSinceCreation: habit.totalDaysSinceCreation, streak: habit.streak, frequency: habit.frequency, completed: habit.completed }
+            payload: { name: habit.name, description: habit.description, dayCreated: habit.dayCreated, totalDaysSinceCreation: habit.totalDaysSinceCreation, daysWatered: habit.daysWatered, streak: habit.streak, frequency: habit.frequency, completed: habit.completed, isPrivate: habit.isPrivate }
           })} className='flex flex-row w-full mt-3 bg-neutral-100/30 border border-neutral-200/90 rounded-xl p-3 shadow-xs '>
             <View key={habit.name} className='flex flex-row justify-between w-full'> 
               <View className='flex flex-col justify-between '> 
