@@ -336,12 +336,18 @@ const Friends = () => {
       <Pressable key={friend.username} className='flex flex-row w-full mt-3 bg-neutral-100/30 border border-neutral-200/90 rounded-xl p-3 shadow-xs ' onPress={() => SheetManager.show('friend-sheet', {
         payload: { username: friend.username, daily_streaks: friend.daily_streaks }})}>
         <View className='flex flex-row justify-between w-full'>
-          <View className='flex flex-col justify-between '>
+          <View className='flex flex-col'>
             <View className='flex flex-row items-center justify-between w-full'>
-              <Text className='text-2xl -tracking-[1.0em] font-bold text-[#344E41] text-left italic mb-2'>{friend.username}</Text>
+              <View className='flex flex-row items-center justify-between relative'>
+                {/* PFP */}
+                <View className='bg-[#344E41] rounded-full h-14 w-14 mr-3' />   
+                <View className='flex flex-col items-start'> 
+                  <Text className='text-2xl -tracking-[1.0em] font-bold text-[#344E41] text-left italic'>{friend.username}</Text>
+                  <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>Your friend has {friend.daily_streaks} daily streaks</Text>
+                </View>
+              </View> 
               <EllipsisVertical className='text-[#344E41]' strokeWidth={2} size={24} /> 
             </View>
-            <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>Your friend has {friend.daily_streaks} daily streaks</Text>
           </View>
         </View>
       </Pressable>
