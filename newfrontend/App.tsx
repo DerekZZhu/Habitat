@@ -9,7 +9,8 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 import { getDatabase, ref, set, get, child } from '@firebase/database';
-import GoogleAuth from "./GoogleAuth.tsx"
+// import GoogleAuth from "./GoogleAuth.tsx"
+import { Canvas, useFrame } from '@react-three/fiber'
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -75,7 +76,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
       </Pressable>
 
-      <GoogleAuth/>
+      {/* <GoogleAuth/> */}
         <View className='mx-auto'>
           <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
             {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
@@ -156,6 +157,29 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );      
 }
 
+function Box(props) {
+  // This reference will give us direct access to the mesh
+  const meshRef = useRef()
+  // Set up state for the hovered and active state
+  const [hovered, setHover] = useState(false)
+  const [active, setActive] = useState(false)
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
+  // Return view, these are regular three.js elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      ref={meshRef}
+      scale={active ? 1.5 : 1}
+      onClick={(event) => setActive(!active)}
+      onPointerOver={(event) => setHover(true)}
+      onPointerOut={(event) => setHover(false)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  )
+}
+
 const HomeScreen = () => {
   return (
     <View className='flex flex-col h-screen bg-[#FFFFFF] p-8 relative'>       
@@ -163,6 +187,9 @@ const HomeScreen = () => {
           <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left'>Habitat</Text>            
           <Menu className='text-[#344E41]' strokeWidth={2} size={32}   />       
         </View> 
+        <Canvas>
+          <Box position={[1.2, 0, 0]} />
+        </Canvas>
     </View>
   );
 };
