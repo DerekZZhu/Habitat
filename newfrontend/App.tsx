@@ -234,7 +234,7 @@ const HomeScreen = () => {
       <ScrollView className='bg-[#FFFFFF] relative' contentContainerStyle={{ flexGrow: 1 }}>
 
         {/* // Garden Space */}
-        <View className="flex flex-col h-screen bg-[#FFFFFF] p-8 relative">
+        {/* <View className="flex flex-col h-screen bg-[#FFFFFF] p-8 relative">
           <View className="flex flex-row items-center justify-between w-full mt-10 ">
             <Text className="text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left">
               Habitat
@@ -245,7 +245,7 @@ const HomeScreen = () => {
             <ambientLight />
             <Box position={[1.2, 0, 0]} />
           </Canvas>
-        </View>
+        </View> */}  
 
         <Pressable className='flex flex-row items-center justify-center m-1' onPress={() => SheetManager.show('habit-create-sheet')}>
           <View className='p-4 absolute bottom-[78px] right-0  '>
@@ -354,7 +354,7 @@ const Habits = () => {
       <ScrollView className='bg-[#FFFFFF] p-4 relative' contentContainerStyle={{ flexGrow: 1 }}>      
         <Text className='text-2xl italic -tracking-[1.0em] font-bold text-[#344E41] text-left mt-4'>Complete Your Daily Habits</Text>  
         <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>Check them off by clicking the leaf or the habit itself.</Text> 
-        {user.habits.map((habit: any, index: number) => (   
+        {user.habits.map((habit, index) => (   
           <Pressable onPress={() => SheetManager.show('habit-explore-sheet', {
             payload: { name: habit.name, description: habit.description, dayCreated: habit.dayCreated, totalDaysSinceCreation: habit.totalDaysSinceCreation, daysWatered: habit.daysWatered, streak: habit.streak, frequency: habit.frequency, completed: habit.completed, isPrivate: habit.isPrivate }
           })} className='flex flex-row w-full mt-3 bg-neutral-100/30 border border-neutral-200/90 rounded-xl p-3 shadow-xs '>
@@ -379,50 +379,15 @@ const Habits = () => {
 };    
 
 const AuthenticatedScreen = ({user, handleAuthentication}) => {
-  return (
+  return ( 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="h-screen ">
-        <Tab.Navigator
-          className="w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center"
-          screenOptions={{headerShown: false}}>
-          <Tab.Screen
-            name="Garden"
-            component={HomeScreen}
-            options={{
-              tabBarLabel: 'Garden',
-              tabBarIcon: ({color, size}) => (
-                <Flower color={color} strokeWidth={2} size={size} />
-              ),
-              tabBarActiveTintColor: '#344E41',
-              tabBarInactiveTintColor: '#8E8E8F',
-            }}
-          />
-          <Tab.Screen
-            name="Habits"
-            component={HomeScreen}
-            options={{
-              tabBarLabel: 'Habits',
-              tabBarIcon: ({color, size}) => (
-                <Leaf color={color} strokeWidth={2} size={size} />
-              ),
-              tabBarActiveTintColor: '#344E41',
-              tabBarInactiveTintColor: '#8E8E8F',
-            }}
-          />
-          <Tab.Screen
-            name="Friends"
-            component={HomeScreen}
-            options={{
-              tabBarLabel: 'Friends',
-              tabBarIcon: ({color, size}) => (
-                <Users color={color} strokeWidth={2} size={size} />
-              ),
-              tabBarActiveTintColor: '#344E41',
-              tabBarInactiveTintColor: '#8E8E8F',
-            }}
-          />
-        </Tab.Navigator>
-      </View>
+      <View className='h-screen'>        
+        <Tab.Navigator className='w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center' screenOptions={{headerShown: false}}> 
+          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden', tabBarIcon: ({ color, size }) => (<Flower color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Habits" initialParams={user} component={Habits} options={{ tabBarLabel: 'Habits', tabBarIcon: ({ color, size }) => (<Leaf color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Friends" component={HomeScreen} options={{ tabBarLabel: 'Friends', tabBarIcon: ({ color, size }) => (<Users color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+        </Tab.Navigator>   
+      </View> 
     </TouchableWithoutFeedback>
   );
 };
@@ -500,25 +465,104 @@ export default App = () => {
     }
   };
 
+  const tempUser = {
+    email: '123@g.co',
+    username: 'testuser',
+    habits: [{
+      name: 'Exercise',
+      description: 'Go for a run',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 3,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false,
+      
+    }, {
+      name: 'Sleep 8 Hours',
+      description: 'Get a good night sleep every night',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 2,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    }, {
+      name: 'Less Screen Time',
+      description: 'Get less than 3 hours of screen time', 
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 2,
+      streak: 2,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false
+    },{
+      name: 'Drink Water',
+      description: 'Drink 8 cups of water a day',
+      dayCreated: '2024-05-01', 
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 3,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    },{ 
+      name: 'Read',
+      description: 'Read a chapter of a book',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 5,
+      streak: 5,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false
+    }, {
+      name: 'Meditate',
+      description: 'Meditate for 10 minutes',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 5,
+      streak: 5,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    }, { 
+      name: 'No More Gooning',
+      description: 'Stop the gooning',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 0,
+      streak: 0,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    },],
+    friends: [],
+    daily_streaks: 0
+  }; 
+
 
   return (
   <SheetProvider>
     <NavigationContainer>
       <StatusBar style="dark" />
-      {user ? (
+      {!user ? (
         // Show user's email if user is authenticated
         <AuthenticatedScreen
-          user={user}
+          user={tempUser} 
           handleAuthentication={handleAuthentication}
         />
       ) : (
         // Show sign-in or sign-up form if user is not authenticated
         <AuthScreen
-          email={email}
+          email={email} 
           setEmail={setEmail}
           password={password}
           setPassword={setPassword}
-          username={username}
+          username={username} 
           setUsername={setUsername}
           isLogin={isLogin}
           setIsLogin={setIsLogin}
