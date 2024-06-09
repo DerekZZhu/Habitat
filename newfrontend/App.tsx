@@ -4,6 +4,7 @@ import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
+import { getDatabase, ref, set, get, child } from '@firebase/database';
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -50,7 +51,6 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
       </TouchableWithoutFeedback>
         {!isLogin && (
         <TextInput
-          style={styles.input}
           value={username}
           onChangeText={setUsername}
           placeholder="Username"
@@ -190,16 +190,18 @@ export default App = () => {
   const handleAuthentication = async () => {
     try {
       if (user) {
-        // If user is already authenticated, log out
         console.log('User logged out successfully!');
         await signOut(auth);
       } else {
-        // Sign in or sign up
         if (isLogin) {
-          // Sign in
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
         } else {
+          const usernameExists = await checkUsernameExists(username);
+          if (usernameExists) {
+            setErrors(prevErrors => ({ ...prevErrors, username: 'Username is already taken' }));
+            return;
+          }
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
           const userId = userCredential.user.uid;
@@ -210,11 +212,18 @@ export default App = () => {
             friends: [],
             daily_streaks: 0
           });
+          await set(ref(db, 'usernames/' + username), true);
         }
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
     }
+  };
+
+  const checkUsernameExists = async (username) => {
+    const dbRef = ref(getDatabase());
+    const snapshot = await get(child(dbRef, `usernames/${username}`));
+    return snapshot.exists();
   };
 
   return (
