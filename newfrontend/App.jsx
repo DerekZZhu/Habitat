@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable, Keyboard, Touchable, TouchableWithoutFeedback } from 'react-native';
 import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
-import { getFirestore, setDoc, doc } from '@firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, OAuthCredential, signInWithCredential } from '@firebase/auth';
+import { getFirestore, setDoc, doc} from '@firebase/firestore';
 import { Menu, Flower, Leaf, Group, GroupIcon, Users } from 'lucide-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 import { getDatabase, ref, set, get, child } from '@firebase/database';
+import * as AppleAuthentication from 'expo-apple-authentication';
+
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -24,7 +31,34 @@ const Tab = createBottomTabNavigator();
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+GoogleSignin.configure();
 
+
+_signIn = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    setState({ userInfo, error: undefined });
+  } catch (error) {
+    if (isErrorWithCode(error)) {
+      switch (error.code) {
+        case statusCodes.SIGN_IN_CANCELLED:
+          // user cancelled the login flow
+          break;
+        case statusCodes.IN_PROGRESS:
+          // operation (eg. sign in) already in progress
+          break;
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          // play services not available or outdated
+          break;
+        default:
+        // some other error happened
+      }
+    } else {
+      // an error that's not related to google sign in occurred
+    }
+  }
+};
   
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
@@ -40,6 +74,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
           className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
           value={email}
           onChangeText={setEmail}
+          autoComplete='email'
           placeholder="Email"
           selectionColor={'#344E41'} 
           autoCapitalize="none"
@@ -68,7 +103,6 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
           secureTextEntry={true}
         />
 
-
       <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
       <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
         <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
@@ -80,6 +114,41 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
             {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
           </Text> 
         </View>
+ 
+        <Text className='text-base tracking-tighter font-medium mx-auto text-[#344E41] my-3  mr-auto text-left'>or</Text>
+
+        <AppleAuthentication.AppleAuthenticationButton  
+          className='w-full h-12 mt-2'   
+          buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE} 
+          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}  
+          cornerRadius={8}
+          onPress={async () => {
+            try {
+              const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [ 
+                  AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                  AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+              });
+              const accessToken = credential.accessToken;
+              const idToken = credential.idToken;
+              // signed in
+            } catch (e) {
+              if (e.code === 'ERR_REQUEST_CANCELED') {
+                // handle that the user canceled the sign-in flow
+              } else {
+                // handle other errors
+              }
+            }
+          }}
+        />
+
+        <GoogleSigninButton
+          style={{ width: 192, height: 48 }}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={_signIn}
+        />
         
       </View> 
         
@@ -116,7 +185,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         <G filter="url(#filter2_d_1429_626)">
           <Ellipse
             cx={137.026}
-            cy={339.841}
+            cy={339.841} 
             rx={340.031}
             ry={237.967}
             transform="rotate(27.655 137.026 339.841)"
