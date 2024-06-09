@@ -4,7 +4,7 @@ import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
-import { Menu, Flower } from 'lucide-react-native';
+import { Menu, Flower, Leaf, Group, GroupIcon, Users } from 'lucide-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
@@ -23,6 +23,7 @@ const Tab = createBottomTabNavigator();
 
 const app = initializeApp(firebaseConfig);
 // const db = getDatabase(app);
+
   
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
@@ -164,16 +165,16 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
         
 
         <Tab.Navigator className='w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center' screenOptions={{headerShown: false}}> 
-          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden' }} />
-          <Tab.Screen name="Habits" component={HomeScreen} />   
-          <Tab.Screen name="Friends" component={HomeScreen} />  
-        </Tab.Navigator> 
+          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden', tabBarIcon: ({ color, size }) => (<Flower color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Habits" component={HomeScreen} options={{ tabBarLabel: 'Habits', tabBarIcon: ({ color, size }) => (<Leaf color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Friends" component={HomeScreen} options={{ tabBarLabel: 'Friends', tabBarIcon: ({ color, size }) => (<Users color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+        </Tab.Navigator>   
       </View>
     </TouchableWithoutFeedback>    
   );
-};
+};  
 
-export default App = () => {
+export default App = () => { 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
