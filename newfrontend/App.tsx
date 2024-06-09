@@ -59,12 +59,11 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
           </>
         )}
         <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <TextInput
           className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
           value={password}
           onChangeText={setPassword}
-          placeholder="Password"
+          placeholder="Password" 
           selectionColor={'#344E41'}
           secureTextEntry={true}
         />
