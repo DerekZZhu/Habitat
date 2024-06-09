@@ -187,7 +187,7 @@ export default App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [user, setUser] = useState(null); // Track user authentication state
+  const [user, setUser] = useState(null); 
   const [isLogin, setIsLogin] = useState(true);
   const [errors, setErrors] = useState({}); 
   const [isFormValid, setIsFormValid] = useState(false); 
@@ -241,10 +241,11 @@ export default App = () => {
           const userId = userCredential.user.uid;
           await set(ref(db, 'users/' + userId), {
             username: username,
+            userId: userId,
             email: email,
-            habits: [],
+            habits: {},
             friends: [],
-            daily_streaks: 0
+            daily_streak: 0
           });
           await set(ref(db, 'usernames/' + username), true);
         }
