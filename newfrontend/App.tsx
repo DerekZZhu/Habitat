@@ -37,7 +37,7 @@ const Tab = createBottomTabNavigator();
 // const db = getDatabase(app);
 
 const AuthScreen = ({
-  email,
+  email: email,
   setEmail,
   password,
   setPassword,
@@ -193,7 +193,6 @@ const AuthScreen = ({
           </ClipPath>
         </Defs>
       </Svg>     
-    </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -256,7 +255,7 @@ const HomeScreen = () => {
           </View> 
         </Pressable> 
       </ScrollView>
-
+    </View>
   ); 
 };
 
@@ -266,6 +265,85 @@ const HomeScreen = () => {
 const Habits = () => { 
 
   // update with real user functions
+
+  const user = {
+    email: '123@g.co',
+    username: 'testuser',
+    habits: [{
+      name: 'Exercise',
+      description: 'Go for a run',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 3,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false,
+      
+    }, {
+      name: 'Sleep 8 Hours',
+      description: 'Get a good night sleep every night',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 2,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    }, {
+      name: 'Less Screen Time',
+      description: 'Get less than 3 hours of screen time', 
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 2,
+      streak: 2,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false
+    },{
+      name: 'Drink Water',
+      description: 'Drink 8 cups of water a day',
+      dayCreated: '2024-05-01', 
+      totalDaysSinceCreation: 5,
+      daysWatered: 3,
+      streak: 3,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    },{ 
+      name: 'Read',
+      description: 'Read a chapter of a book',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 5,
+      streak: 5,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: false
+    }, {
+      name: 'Meditate',
+      description: 'Meditate for 10 minutes',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 5,
+      streak: 5,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    }, { 
+      name: 'No More Gooning',
+      description: 'Stop the gooning',
+      dayCreated: '2024-05-01',
+      totalDaysSinceCreation: 5,
+      daysWatered: 0,
+      streak: 0,
+      frequency: 'Daily',
+      completed: false,
+      isPrivate: true
+    },],
+    friends: [],
+    daily_streaks: 0
+  }; 
   
   return (
     <View>
