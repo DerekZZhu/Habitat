@@ -23,7 +23,7 @@ const firebaseConfig = {
 const Tab = createBottomTabNavigator();
 
 const app = initializeApp(firebaseConfig);
-// const db = getDatabase(app);
+const db = getDatabase(app);
 
   
 
