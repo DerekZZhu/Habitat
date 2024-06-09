@@ -4,6 +4,8 @@ import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
+import { Menu, Flower } from 'lucide-react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 
@@ -16,6 +18,8 @@ const firebaseConfig = {
   appId: "1:497983486268:web:8df0c6543fe02e9443c639",
   measurementId: "G-H31Q7QJM4E"
 };
+
+const Tab = createBottomTabNavigator();
 
 const app = initializeApp(firebaseConfig);
 // const db = getDatabase(app);
@@ -141,13 +145,31 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );      
 }
 
+const HomeScreen = () => {
+  return (
+    <View className='flex flex-col h-screen bg-[#FFFFFF] p-8 relative'>       
+        <View className='flex flex-row items-center justify-between w-full mt-10 '>
+          <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left'>Habitat</Text>            
+          <Menu className='text-[#344E41]' strokeWidth={2} size={32}   />       
+        </View> 
+    </View>
+  );
+};
+
+
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
-      <View className='flex flex-row h-screen bg-[#FFFFFF] p-8 '>     
-        <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left    mt-12'>Habitat</Text>            
+      <View className='h-screen '>        
+        
+
+        <Tab.Navigator className='w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center' screenOptions={{headerShown: false}}> 
+          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden' }} />
+          <Tab.Screen name="Habits" component={HomeScreen} />   
+          <Tab.Screen name="Friends" component={HomeScreen} />  
+        </Tab.Navigator> 
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableWithoutFeedback>    
   );
 };
 
@@ -166,7 +188,7 @@ export default App = () => {
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth]); 
 
   useEffect(() => {   
     validateForm(); 
@@ -225,7 +247,7 @@ export default App = () => {
   }   
 
   return (
-    <View>
+    <NavigationContainer>
       
       {!user ? (  
         // Show user's email if user is authenticated
@@ -245,7 +267,7 @@ export default App = () => {
           isFormValid={isFormValid}
           errors={errors}
         />
-      )}
-    </View>   
+      )} 
+    </NavigationContainer>
   );
 }
