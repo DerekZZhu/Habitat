@@ -282,12 +282,12 @@ const Habits = () => {
       <View className='flex flex-row items-center justify-between w-full pt-8 px-8 pb-2  sticky bg-white'> 
         <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left mt-10'>Habits</Text>              
         <Menu className='text-[#344E41] mt-10' strokeWidth={2} size={32}   />       
-      </View> 
+      </View>     
       <ScrollView className='bg-[#FFFFFF] p-4 relative' contentContainerStyle={{ flexGrow: 1 }}>      
         <Text className='text-2xl italic -tracking-[1.0em] font-bold text-[#344E41] text-left mt-4'>Complete Your Daily Habits</Text>  
         <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>Check them off by clicking the leaf or the habit itself.</Text> 
-        {user.habits.map((habit: any, index: number) => (  
-          <View onTouchEnd={() => SheetManager.show('habit-explore-sheet', {
+        {user.habits.map((habit: any, index: number) => (   
+          <Pressable onPress={() => SheetManager.show('habit-explore-sheet', {
             payload: { name: habit.name, description: habit.description, dayCreated: habit.dayCreated, totalDaysSinceCreation: habit.totalDaysSinceCreation, daysWatered: habit.daysWatered, streak: habit.streak, frequency: habit.frequency, completed: habit.completed, isPrivate: habit.isPrivate }
           })} className='flex flex-row w-full mt-3 bg-neutral-100/30 border border-neutral-200/90 rounded-xl p-3 shadow-xs '>
             <View key={habit.name} className='flex flex-row justify-between w-full'> 
@@ -300,9 +300,9 @@ const Habits = () => {
                   </View> 
                 </View> 
                 <Text className='text-base -tracking-[0.6em] font-medium text-[#3A5A4B] text-left'>{habit.description}</Text>  
-              </View>          
+              </View>            
             </View>    
-          </View>
+          </Pressable>
         ))}
         <View className='flex flex-row items-center justify-between mb-36 ' />
       </ScrollView>

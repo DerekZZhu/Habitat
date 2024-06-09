@@ -90,6 +90,17 @@ function HabbitCreateSheet() {
         <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', padding: 32}}> 
           <Sprout size={48} color='#344E41' /> 
           <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 32, color: '#344E41', letterSpacing: '-0.6em'}}>Start a New Habit Today!</Text>    
+          
+          <Text style={{fontSize: 16, marginBottom: 8, color: '#344E41', letterSpacing: '-0.6em', textAlign: 'left', marginRight: 'auto', fontWeight: '600'}}>How often would you like to do this?</Text>
+          <DropDownPicker
+            open={open}
+            value={frequency}
+            style={{width: '100%', height: 48, borderColor: '#D2D5DA', borderWidth: 1, borderRadius: 8, padding: 16, marginBottom: 16}}
+            items={frequencys}
+            setOpen={setOpen}
+            setValue={setFrequency}
+          />
+            
           <Text style={{fontSize: 16, marginBottom: 8, color: '#344E41', letterSpacing: '-0.6em', textAlign: 'left', marginRight: 'auto', fontWeight: '600'}}>What would you like to achieve?</Text> 
           <TextInput  
             className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
@@ -109,16 +120,6 @@ function HabbitCreateSheet() {
             placeholder="Describe your goal" 
             selectionColor={'#344E41'} 
               
-          />
-
-          <Text style={{fontSize: 16, marginBottom: 8, color: '#344E41', letterSpacing: '-0.6em', textAlign: 'left', marginRight: 'auto', fontWeight: '600'}}>How often would you like to do this?</Text>
-          <DropDownPicker
-            open={open}
-            value={frequency}
-            style={{width: '100%', height: 48, borderColor: '#D2D5DA', borderWidth: 1, borderRadius: 8, padding: 16, marginBottom: 16}}
-            items={frequencys}
-            setOpen={setOpen}
-            setValue={setFrequency}
           />
 
         </View>
