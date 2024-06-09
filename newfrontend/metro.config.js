@@ -25,6 +25,9 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 const defaultConfig = getDefaultConfig(__dirname);
 
+const sourceExtsAdd = ['js', 'jsx', 'json', 'ts', 'tsx', 'cjs'];
+const assetExtsAdd = ['glb', 'gltf', 'mtl', 'obj', 'png', 'jpg'];
+
 const {
   resolver: {sourceExts, assetExts},
 } = getDefaultConfig(__dirname);
@@ -40,8 +43,8 @@ const config = {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },
   resolver: {
-    assetExts: assetExts.filter(ext => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'svg'],
+    sourceExts: ['js', 'jsx', 'json', 'ts', 'tsx', 'cjs', 'mjs'],
+    assetExts: ['glb', 'gltf', 'png', 'jpg'],
   },
 };
 

@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, Suspense} from 'react';
+import {Asset} from 'expo-asset';
 import {
   View,
   Text,
@@ -21,13 +22,31 @@ import {
   signOut,
 } from '@firebase/auth';
 import {getFirestore, setDoc, doc} from '@firebase/firestore';
-import {Menu, Flower, Leaf, Group, GroupIcon, Users} from 'lucide-react-native';
+import {
+  Menu,
+  Flower,
+  Leaf,
+  Group,
+  GroupIcon,
+  Users,
+  Orbit,
+} from 'lucide-react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {getDatabase, ref, set, get, child} from '@firebase/database';
 // import GoogleAuth from "./GoogleAuth.tsx"
-import {Canvas, useFrame} from '@react-three/fiber';
+import {Canvas, useFrame} from '@react-three/fiber/native';
+import {useLoader} from '@react-three/fiber/native';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import modelPath from './assets/Boab.glb';
+import {
+  Environment,
+  OrthographicCamera,
+  useGLTF,
+} from '@react-three/drei/native';
+import {GLBModel} from './src/components/models';
+import Land from './src/components/Land';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM',
@@ -235,9 +254,20 @@ const HomeScreen = () => {
         <Menu className="text-[#344E41]" strokeWidth={2} size={32} />
       </View>
       <Canvas>
+        <OrthographicCamera
+          makeDefault
+          zoom={10}
+          near={0.00001}
+          far={1000}
+          position={[0, 10, 100]}
+        />
         <ambientLight />
-        <Box position={[1.2, 0, 0]} />
+        <Suspense fallback={null}>
+          <GLBModel modelPath={modelPath} position={[1.2, 0, -100]} />
+          <Environment preset="sunset" />
+        </Suspense>
       </Canvas>
+      <Land />
     </View>
   );
 };
@@ -379,7 +409,7 @@ export default App = () => {
 
   return (
     <NavigationContainer>
-      {user ? (
+      {/* {user ? (
         // Show user's email if user is authenticated
         <AuthenticatedScreen
           user={user}
@@ -400,7 +430,8 @@ export default App = () => {
           isFormValid={isFormValid}
           errors={errors}
         />
-      )}
+      )} */}
+      <HomeScreen />
     </NavigationContainer>
   );
 };

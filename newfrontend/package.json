@@ -14,13 +14,14 @@
     "@react-native-firebase/app": "^20.1.0",
     "@react-native-google-signin/google-signin": "^12.2.0",
     "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "@supabase/supabase-js": "^2.43.4",
     "@types/three": "^0.165.0",
     "expo": "^51.0.11",
     "expo-auth-session": "~5.5.2",
-    "expo-gl": "^14.0.2",
+    "expo-gl": "~14.0.2",
     "expo-three": "^7.0.1",
     "firebase": "^10.12.2",
     "lucide-react-native": "^0.390.0",
@@ -31,6 +32,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-svg-transformer": "^1.4.0",
+    "react-native-url-polyfill": "^2.0.0",
     "three": "^0.165.0"
   },
   "devDependencies": {
