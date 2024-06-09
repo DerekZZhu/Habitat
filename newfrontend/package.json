@@ -18,6 +18,7 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "@supabase/supabase-js": "^2.43.4",
     "@types/three": "^0.165.0",
+    "axios": "^1.7.2",
     "expo": "^51.0.11",
     "expo-auth-session": "~5.5.2",
     "expo-gl": "^14.0.2",
