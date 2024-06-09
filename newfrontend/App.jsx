@@ -5,6 +5,8 @@ import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
+
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
   authDomain: "habitat-9f1ab.firebaseapp.com",
@@ -16,8 +18,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
+// const db = getDatabase(app);
+  
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
   return ( 
@@ -59,7 +61,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 
       <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
       <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
-        <Text onPress={handleAuthentication} className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
+        <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
       </Pressable>
 
       <View>
@@ -141,11 +143,12 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
 
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
-    <View >
-      <Text>Welcome</Text>
-      <Text>{user.email}</Text>
-      <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
+      <View className='flex flex-row h-screen bg-[#FFFFFF] p-8'>     
+        <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41]   mt-12'>Habitat</Text>            
+
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -217,12 +220,17 @@ export default App = () => {
     }
   };
 
+  const userTemp = {
+    email: '123',
+    password: 123,
+  }   
+
   return (
     <View>
       
-      {user ? (
+      {!user ? (  
         // Show user's email if user is authenticated
-        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
+        <AuthenticatedScreen user={userTemp} handleAuthentication={handleAuthentication} />
       ) : (
         // Show sign-in or sign-up form if user is not authenticated
         <AuthScreen
