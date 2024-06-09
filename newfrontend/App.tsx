@@ -8,6 +8,7 @@ import { Menu, Flower, Leaf, Group, GroupIcon, Users } from 'lucide-react-native
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
+import { getDatabase, ref, set, get, child } from '@firebase/database';
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -32,50 +33,59 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
     <View className='flex flex-col items-center h-screen bg-[#FFFFFF] p-8'>    
       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto'>Welcome to</Text>
       <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto'>Habitat</Text>           
-       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>    
-       <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
-       <TextInput
-        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        selectionColor={'#344E41'} 
-        autoCapitalize="none"
-        
-      />
-      <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <TextInput
-        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        selectionColor={'#344E41'}
-        secureTextEntry={true}
-      />
-
-      </TouchableWithoutFeedback>
-        {!isLogin && (
-        <TextInput
-          style={styles.input}
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Username"
+       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>   
+       <View className='relative z-20 w-full h-full'>   
+        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
+        <TextInput 
+          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          selectionColor={'#344E41'} 
+          autoCapitalize="none"
+          
         />
-      )}
+        {!isLogin && (
+          <> 
+            <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Username</Text>
+            <TextInput
+              className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+              value={username}
+              onChangeText={setUsername}
+              placeholder="Username"
+              selectionColor={'#344E41'}
+              autoCapitalize="none"
+            />
+          </>
+        )}
+        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TextInput
+          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+          selectionColor={'#344E41'}
+          secureTextEntry={true}
+        />
+
 
       <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
       <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
         <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
       </Pressable>
 
-      <View>
-        <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
-          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-        </Text> 
-      </View>
-      <Svg
-      className='absolute bottom-0 right-0 z-0 mt-24'
+
+        <View className='mx-auto'>
+          <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
+            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
+          </Text> 
+        </View>
+        
+      </View> 
+        
+      <Svg 
+      className='absolute -bottom-16 right-0 z-0' 
       width={393}
       height={268}
       viewBox="0 0 393 268"
@@ -215,16 +225,18 @@ export default App = () => {
   const handleAuthentication = async () => {
     try {
       if (user) {
-        // If user is already authenticated, log out
         console.log('User logged out successfully!');
         await signOut(auth);
       } else {
-        // Sign in or sign up
         if (isLogin) {
-          // Sign in
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
         } else {
+          const usernameExists = await checkUsernameExists(username);
+          if (usernameExists) {
+            setErrors(prevErrors => ({ ...prevErrors, username: 'Username is already taken' }));
+            return;
+          }
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
           const userId = userCredential.user.uid;
@@ -235,24 +247,26 @@ export default App = () => {
             friends: [],
             daily_streaks: 0
           });
+          await set(ref(db, 'usernames/' + username), true);
         }
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
     }
   };
+  const checkUsernameExists = async (username) => {
+    const dbRef = ref(getDatabase());
+    const snapshot = await get(child(dbRef, `usernames/${username}`));
+    return snapshot.exists();
+  };
 
-  const userTemp = {
-    email: '123',
-    password: 123,
-  }   
 
   return (
     <NavigationContainer>
       
-      {!user ? (  
+      {user ? (  
         // Show user's email if user is authenticated
-        <AuthenticatedScreen user={userTemp} handleAuthentication={handleAuthentication} />
+        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
       ) : (
         // Show sign-in or sign-up form if user is not authenticated
         <AuthScreen
