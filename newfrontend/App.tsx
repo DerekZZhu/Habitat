@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Pressable, Keyboard, Touchable, TouchableWithoutFeedback } from 'react-native';
 import { initializeApp } from '@firebase/app';
+import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
-import { getFirestore } from '@firebase/firestore';
-import { getDatabase, ref, set } from '@firebase/database';
+import { getFirestore, setDoc, doc } from '@firebase/firestore';
 
-const firebaseConfig = {
+const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
   authDomain: "habitat-9f1ab.firebaseapp.com",
   projectId: "habitat-9f1ab",
@@ -18,26 +18,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const AuthScreen = ({ email, setEmail, password, setPassword, username, setUsername, isLogin, setIsLogin, handleAuthentication }) => {
-  return (
-    <View style={styles.authContainer}>
-       <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
 
+const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
+  return ( 
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
+    <View className='flex flex-col items-center h-screen bg-[#FFFFFF] p-8'>    
+      <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto'>Welcome to</Text>
+      <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto'>Habitat</Text>           
+       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>    
+       <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
        <TextInput
-        style={styles.input}
+        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
         value={email}
         onChangeText={setEmail}
         placeholder="Email"
+        selectionColor={'#344E41'} 
         autoCapitalize="none"
+        
       />
+      <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <TextInput
-        style={styles.input}
+        className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
         value={password}
         onChangeText={setPassword}
         placeholder="Password"
-        secureTextEntry
+        selectionColor={'#344E41'}
+        secureTextEntry={true}
       />
-      {!isLogin && (
+
+      </TouchableWithoutFeedback>
+        {!isLogin && (
         <TextInput
           style={styles.input}
           value={username}
@@ -45,24 +56,94 @@ const AuthScreen = ({ email, setEmail, password, setPassword, username, setUsern
           placeholder="Username"
         />
       )}
-      <View style={styles.buttonContainer}>
-        <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
-      </View>
 
-      <View style={styles.bottomContainer}>
-        <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
+      <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
+      <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
+        <Text onPress={handleAuthentication} className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
+      </Pressable>
+
+      <View>
+        <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
           {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-        </Text>
+        </Text> 
       </View>
+      <Svg
+      className='absolute bottom-0 right-0 z-0 mt-24'
+      width={393}
+      height={268}
+      viewBox="0 0 393 268"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <G clipPath="url(#clip0_1429_626)">
+        <Path fill="#fff" d="M0 0H393V268H0z" /> 
+        <G filter="url(#filter0_d_1429_626)">
+          <Ellipse
+            cx={135.375}
+            cy={282.225}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 135.375 282.225)"
+            fill="#344E41"
+          />
+        </G>
+        <G filter="url(#filter1_d_1429_626)">
+          <Ellipse
+            cx={134.431}
+            cy={310.236}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 134.431 310.236)"
+            fill="#3A5A4B"
+          />
+        </G>
+        <G filter="url(#filter2_d_1429_626)">
+          <Ellipse
+            cx={137.026}
+            cy={339.841}
+            rx={340.031}
+            ry={237.967}
+            transform="rotate(27.655 137.026 339.841)"
+            fill="#578163"
+          />
+        </G>
+        <G filter="url(#filter3_d_1429_626)">
+          <Ellipse
+            cx={127.836}
+            cy={370.518}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 127.836 370.518)"
+            fill="#8AB197"
+          />
+        </G>
+        <G filter="url(#filter4_d_1429_626)">
+          <Ellipse
+            cx={113.627}
+            cy={403.436}
+            rx={340.031}
+            ry={237.421}
+            transform="rotate(27.655 113.627 403.436)"
+            fill="#fff"
+          />
+        </G>
+      </G>
+      <Defs>
+        <ClipPath id="clip0_1429_626">
+          <Path fill="#fff" d="M0 0H393V268H0z" />
+        </ClipPath>
+      </Defs>
+    </Svg>     
     </View>
-  );
+    </TouchableWithoutFeedback>
+  );      
 }
 
 const AuthenticatedScreen = ({ user, handleAuthentication }) => {
   return (
-    <View style={styles.authContainer}>
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.emailText}>{user.email}</Text>
+    <View >
+      <Text>Welcome</Text>
+      <Text>{user.email}</Text>
       <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
     </View>
   );
@@ -74,7 +155,8 @@ export default App = () => {
   const [username, setUsername] = useState('');
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
-
+  const [errors, setErrors] = useState({}); 
+  const [isFormValid, setIsFormValid] = useState(false); 
   const auth = getAuth(app);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -83,6 +165,27 @@ export default App = () => {
 
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {   
+    validateForm(); 
+  }, [email, password]); 
+
+  const validateForm = () => {
+    const errors = {};
+    const empty = {};
+    if (email.length === 0) {
+      empty.email = 'Email address is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {      
+      errors.email = 'Email address is invalid';
+    }
+    if (password.length === 0) {
+      empty.password = 'Password is required';
+    } else if (password.length < 6) {   
+      errors.password = 'Password must be at least 6 characters';
+    }
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0 && Object.keys(empty).length === 0);
+  }
 
   const handleAuthentication = async () => {
     try {
@@ -113,8 +216,10 @@ export default App = () => {
       console.error('Authentication error:', error.message);
     }
   };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View>
+      
       {user ? (
         // Show user's email if user is authenticated
         <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
@@ -130,54 +235,10 @@ export default App = () => {
           isLogin={isLogin}
           setIsLogin={setIsLogin}
           handleAuthentication={handleAuthentication}
+          isFormValid={isFormValid}
+          errors={errors}
         />
       )}
-    </ScrollView>
+    </View>   
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-  },
-  authContainer: {
-    width: '80%',
-    maxWidth: 400,
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 8,
-    elevation: 3,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    marginBottom: 16,
-    padding: 8,
-    borderRadius: 4,
-  },
-  buttonContainer: {
-    marginBottom: 16,
-  },
-  toggleText: {
-    color: '#3498db',
-    textAlign: 'center',
-  },
-  bottomContainer: {
-    marginTop: 20,
-  },
-  emailText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-});
