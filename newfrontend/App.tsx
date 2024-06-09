@@ -16,76 +16,112 @@ import { SheetProvider } from 'react-native-actions-sheet';
 import ActionSheet from 'react-native-actions-sheet';
 import { StatusBar } from 'expo-status-bar';  
   
+// import GoogleAuth from "./GoogleAuth.tsx"
+import {Canvas, useFrame} from '@react-three/fiber';
+import axios from 'axios';
 
-const firebaseConfig = {     
-  apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
-  authDomain: "habitat-9f1ab.firebaseapp.com",
-  projectId: "habitat-9f1ab",
-  storageBucket: "habitat-9f1ab.appspot.com",
-  messagingSenderId: "497983486268",
-  appId: "1:497983486268:web:8df0c6543fe02e9443c639",
-  measurementId: "G-H31Q7QJM4E"
-};
+
+// const firebaseConfig = {
+//   apiKey: 'AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM',
+//   authDomain: 'habitat-9f1ab.firebaseapp.com',
+//   projectId: 'habitat-9f1ab',
+//   storageBucket: 'habitat-9f1ab.appspot.com',
+//   messagingSenderId: '497983486268',
+//   appId: '1:497983486268:web:8df0c6543fe02e9443c639',
+//   measurementId: 'G-H31Q7QJM4E',
+// };
 
 const Tab = createBottomTabNavigator();
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// const app = initializeApp(firebaseConfig);
+// const db = getDatabase(app);
 
-  
+const AuthScreen = ({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  isLogin,
+  setIsLogin,
+  handleAuthentication,
+  isFormValid,
+  errors,
+  username,
+  setUsername,
+}) => {
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View className="flex flex-col items-center h-screen bg-[#FFFFFF] p-8">
+        <Text className="text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto">
+          Welcome to
+        </Text>
+        <Text className="text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto">
+          Habitat
+        </Text>
+        <Text className="text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2">
+          Start Your Journey
+        </Text>
+        <View className="relative z-20 w-full h-full">
+          <Text className="text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left">
+            Email Address
+          </Text>
+          <TextInput
+            className="w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            selectionColor={'#344E41'}
+            autoCapitalize="none"
+          />
+          {!isLogin && (
+            <>
+              <Text className="text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left">
+                Username
+              </Text>
+              <TextInput
+                className="w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black"
+                value={username}
+                onChangeText={setUsername}
+                placeholder="Username"
+                selectionColor={'#344E41'}
+                autoCapitalize="none"
+              />
+            </>
+          )}
+          <Text className="text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left">
+            Password
+          </Text>
+          <TextInput
+            className="w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black"
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            selectionColor={'#344E41'}
+            secureTextEntry={true}
+          />
 
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
-  return ( 
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
-    <View className='flex flex-col items-center h-screen bg-[#FFFFFF] p-8'>    
-      <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mt-16 mx-auto'>Welcome to</Text>
-      <Text className='text-6xl italic -tracking-[1.5em] font-bold text-[#344E41] mx-auto'>Habitat</Text>           
-       <Text className='text-2xl italic tracking-tighter font-bold text-[#344E41] mx-auto mb-6 -mt-2'>Start Your Journey</Text>   
-       <View className='relative z-20 w-full h-full'>   
-        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Email Address</Text>
-        <TextInput 
-          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          selectionColor={'#344E41'} 
-          autoCapitalize="none"
-          
-        />
-        {!isLogin && (
-          <> 
-            <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Username</Text>
-            <TextInput
-              className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-              value={username}
-              onChangeText={setUsername}
-              placeholder="Username"
-              selectionColor={'#344E41'}
-              autoCapitalize="none"
-            />
-          </>
-        )}
-        <Text className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left'>Password</Text>
-        <TextInput
-          className='w-full h-12 border border-[#D2D5DA] shadow rounded-lg px-4 mt-2  text-black'
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password" 
-          selectionColor={'#344E41'}
-          secureTextEntry={true}
-        />
+          <Text className="text-sm text-red-500 mt-2">{errors.email}</Text>
+          <Pressable
+            className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${
+              isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'
+            }`}
+            onPress={handleAuthentication}
+            disabled={!isFormValid}>
+            <Text className="text-white">
+              {isLogin ? 'Sign In' : 'Sign Up'}
+            </Text>
+          </Pressable>
 
-
-      <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
-      <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
-        <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
-      </Pressable>
-
-
-        <View className='mx-auto'>
-          <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
-            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
-          </Text> 
+          {/* <GoogleAuth/> */}
+          <View className="mx-auto">
+            <Text
+              onPress={() => setIsLogin(!isLogin)}
+              className="text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer">
+              {isLogin
+                ? 'Need an account? Sign Up'
+                : 'Already have an account? Sign In'}
+            </Text>
+          </View>
         </View>
         
       </View> 
@@ -159,7 +195,30 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
       </Svg>     
     </View>
     </TouchableWithoutFeedback>
-  );      
+  );
+};
+
+function Box(props) {
+  // This reference will give us direct access to the mesh
+  const meshRef = useRef();
+  // Set up state for the hovered and active state
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+  // Subscribe this component to the render-loop, rotate the mesh every frame
+  useFrame((state, delta) => (meshRef.current.rotation.x += delta));
+  // Return view, these are regular three.js elements expressed in JSX
+  return (
+    <mesh
+      {...props}
+      ref={meshRef}
+      scale={active ? 1.5 : 1}
+      onClick={event => setActive(!active)}
+      onPointerOver={event => setHover(true)}
+      onPointerOut={event => setHover(false)}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    </mesh>
+  );
 }
 
 const HomeScreen = () => {
@@ -176,9 +235,18 @@ const HomeScreen = () => {
       <ScrollView className='bg-[#FFFFFF] relative' contentContainerStyle={{ flexGrow: 1 }}>
 
         {/* // Garden Space */}
-        <View className='flex flex-col items-center justify-center w-full h-full bg-neutral-100 border border-neutral-200  '>
-
-        </View>  
+        <View className="flex flex-col h-screen bg-[#FFFFFF] p-8 relative">
+          <View className="flex flex-row items-center justify-between w-full mt-10 ">
+            <Text className="text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left">
+              Habitat
+            </Text>
+            <Menu className="text-[#344E41]" strokeWidth={2} size={32} />
+          </View>
+          <Canvas>
+            <ambientLight />
+            <Box position={[1.2, 0, 0]} />
+          </Canvas>
+        </View>
 
         <Pressable className='flex flex-row items-center justify-center m-1' onPress={() => SheetManager.show('habit-create-sheet')}>
           <View className='p-4 absolute bottom-[78px] right-0  '>
@@ -188,94 +256,16 @@ const HomeScreen = () => {
           </View> 
         </Pressable> 
       </ScrollView>
-    </View>
+
   ); 
 };
+
 
 
  
 const Habits = () => { 
 
   // update with real user functions
-
-  const user = {
-    email: '123@g.co',
-    username: 'testuser',
-    habits: [{
-      name: 'Exercise',
-      description: 'Go for a run',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 3,
-      streak: 3,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: false,
-      
-    }, {
-      name: 'Sleep 8 Hours',
-      description: 'Get a good night sleep every night',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 3,
-      streak: 2,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: true
-    }, {
-      name: 'Less Screen Time',
-      description: 'Get less than 3 hours of screen time', 
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 2,
-      streak: 2,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: false
-    },{
-      name: 'Drink Water',
-      description: 'Drink 8 cups of water a day',
-      dayCreated: '2024-05-01', 
-      totalDaysSinceCreation: 5,
-      daysWatered: 3,
-      streak: 3,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: true
-    },{ 
-      name: 'Read',
-      description: 'Read a chapter of a book',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 5,
-      streak: 5,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: false
-    }, {
-      name: 'Meditate',
-      description: 'Meditate for 10 minutes',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 5,
-      streak: 5,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: true
-    }, { 
-      name: 'No More Gooning',
-      description: 'Stop the gooning',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      daysWatered: 0,
-      streak: 0,
-      frequency: 'Daily',
-      completed: false,
-      isPrivate: true
-    },],
-    friends: [],
-    daily_streaks: 0
-  }; 
   
   return (
     <View>
@@ -310,58 +300,94 @@ const Habits = () => {
   );
 };    
 
-const AuthenticatedScreen = ({ user, handleAuthentication }) => { 
-
+const AuthenticatedScreen = ({user, handleAuthentication}) => {
   return (
-      <View className='h-screen '>        
-        <Tab.Navigator className='w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center' screenOptions={{headerShown: false}}> 
-          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden', tabBarIcon: ({ color, size }) => (<Flower color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
-          <Tab.Screen name="Habits" initialParams={user} component={Habits} options={{ tabBarLabel: 'Habits', tabBarIcon: ({ color, size }) => (<Leaf color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
-          <Tab.Screen name="Friends" component={HomeScreen} options={{ tabBarLabel: 'Friends', tabBarIcon: ({ color, size }) => (<Users color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
-        </Tab.Navigator>   
-      </View> 
-  );  
-};  
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View className="h-screen ">
+        <Tab.Navigator
+          className="w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center"
+          screenOptions={{headerShown: false}}>
+          <Tab.Screen
+            name="Garden"
+            component={HomeScreen}
+            options={{
+              tabBarLabel: 'Garden',
+              tabBarIcon: ({color, size}) => (
+                <Flower color={color} strokeWidth={2} size={size} />
+              ),
+              tabBarActiveTintColor: '#344E41',
+              tabBarInactiveTintColor: '#8E8E8F',
+            }}
+          />
+          <Tab.Screen
+            name="Habits"
+            component={HomeScreen}
+            options={{
+              tabBarLabel: 'Habits',
+              tabBarIcon: ({color, size}) => (
+                <Leaf color={color} strokeWidth={2} size={size} />
+              ),
+              tabBarActiveTintColor: '#344E41',
+              tabBarInactiveTintColor: '#8E8E8F',
+            }}
+          />
+          <Tab.Screen
+            name="Friends"
+            component={HomeScreen}
+            options={{
+              tabBarLabel: 'Friends',
+              tabBarIcon: ({color, size}) => (
+                <Users color={color} strokeWidth={2} size={size} />
+              ),
+              tabBarActiveTintColor: '#344E41',
+              tabBarInactiveTintColor: '#8E8E8F',
+            }}
+          />
+        </Tab.Navigator>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
-export default App = () => { 
-
-
+export default App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [user, setUser] = useState(null); // Track user authentication state
+  const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
-  const [errors, setErrors] = useState({}); 
-  const [isFormValid, setIsFormValid] = useState(false); 
-  const auth = getAuth(app);
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+  // const auth = getAuth(app);
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, user => {
+  //     setUser(user);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [auth]);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-
-    return () => unsubscribe();
-  }, [auth]); 
-
-  useEffect(() => {   
-    validateForm(); 
-  }, [email, password]); 
+    validateForm();
+  }, [email, password]);
 
   const validateForm = () => {
     const errors = {};
     const empty = {};
     if (email.length === 0) {
       empty.email = 'Email address is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {      
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email address is invalid';
     }
     if (password.length === 0) {
       empty.password = 'Password is required';
-    } else if (password.length < 6) {   
+    } else if (password.length < 6) {
       errors.password = 'Password must be at least 6 characters';
     }
     setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0 && Object.keys(empty).length === 0);
-  }
+    setIsFormValid(
+      Object.keys(errors).length === 0 && Object.keys(empty).length === 0,
+    );
+  };
 
   const handleAuthentication = async () => {
     try {
@@ -370,67 +396,30 @@ export default App = () => {
         await signOut(auth);
       } else {
         if (isLogin) {
-          await signInWithEmailAndPassword(auth, email, password);
-          console.log('User signed in successfully!');
-        } else {
-          const usernameExists = await checkUsernameExists(username);
-          if (usernameExists) {
-            setErrors(prevErrors => ({ ...prevErrors, username: 'Username is already taken' }));
-            return;
+          // login logic
+          const response = await axios.post('http://127.0.0.1:8000/auth/login', {
+            email: email,
+            password: password
+          });
+          if (response.data) {
+            console.log('User signed in successfully!');
           }
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          console.log('User created successfully!');
-          const userId = userCredential.user.uid;
-          await set(ref(db, 'users/' + userId), {
+        } else {
+          // register logic
+          const response = await axios.post('http://127.0.0.1:8000/auth/register', {
             username: username,
             email: email,
-            habits: [],
-            friends: [],
-            daily_streaks: 0
+            password: password
           });
-          await set(ref(db, 'usernames/' + username), true);
+  
+          if (response.data) {
+            console.log('User created successfully!');
+          }
         }
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
     }
-  };
-  const checkUsernameExists = async (username) => {
-    const dbRef = ref(getDatabase());
-    const snapshot = await get(child(dbRef, `usernames/${username}`));
-    return snapshot.exists();
-  };
-
-  const tempUser = {
-    email: '123@g.co',
-    username: 'testuser',
-    habits: [{
-      name: 'Exercise',
-      description: 'Go for a run',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      streak: 3,
-      frequency: 'Daily',
-      completed: false
-    }, {
-      name: 'Read',
-      description: 'Read a chapter of a book',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      streak: 5,
-      frequency: 'Daily',
-      completed: false
-    }, {
-      name: 'Meditate',
-      description: 'Meditate for 10 minutes',
-      dayCreated: '2024-05-01',
-      totalDaysSinceCreation: 5,
-      streak: 5,
-      frequency: 'Daily',
-      completed: false
-    }],
-    friends: [],
-    daily_streaks: 0
   };
 
 
@@ -438,28 +427,29 @@ export default App = () => {
   <SheetProvider>
     <NavigationContainer>
       <StatusBar style="dark" />
-      {!user ? (  
+      {user ? (
         // Show user's email if user is authenticated
-        <AuthenticatedScreen user={tempUser} handleAuthentication={handleAuthentication} />
+        <AuthenticatedScreen
+          user={user}
+          handleAuthentication={handleAuthentication}
+        />
       ) : (
         // Show sign-in or sign-up form if user is not authenticated
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
-          <AuthScreen
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            username={username}
-            setUsername={setUsername}
-            isLogin={isLogin}
-            setIsLogin={setIsLogin}
-            handleAuthentication={handleAuthentication}
-            isFormValid={isFormValid}
-            errors={errors}
-          />
-        </TouchableWithoutFeedback>
-      )} 
+        <AuthScreen
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          username={username}
+          setUsername={setUsername}
+          isLogin={isLogin}
+          setIsLogin={setIsLogin}
+          handleAuthentication={handleAuthentication}
+          isFormValid={isFormValid}
+          errors={errors}
+        />
+      )}
     </NavigationContainer>
   </SheetProvider>
   );
-}
+};
