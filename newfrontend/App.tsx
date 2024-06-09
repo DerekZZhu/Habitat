@@ -9,6 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 import { getDatabase, ref, set, get, child } from '@firebase/database';
+import GoogleAuth from "./GoogleAuth.tsx"
 
 const firebaseConfig = {     
   apiKey: "AIzaSyDOjuKJwdB3Xye8gvrX3ghdzIKSma8kCdM",
@@ -74,7 +75,7 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
       </Pressable>
 
-
+      <GoogleAuth/>
         <View className='mx-auto'>
           <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
             {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
