@@ -4,6 +4,10 @@ import { initializeApp } from '@firebase/app';
 import Svg, { G, Path, Ellipse, Defs, ClipPath } from "react-native-svg";  
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { getFirestore, setDoc, doc } from '@firebase/firestore';
+import { Menu, Flower, Leaf, Group, GroupIcon, Users } from 'lucide-react-native';
+import { NavigationContainer } from '@react-navigation/native';
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; 
 import { getDatabase, ref, set, get, child } from '@firebase/database';
 
 const firebaseConfig = {     
@@ -16,9 +20,12 @@ const firebaseConfig = {
   measurementId: "G-H31Q7QJM4E"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const Tab = createBottomTabNavigator();
 
+const app = initializeApp(firebaseConfig);
+// const db = getDatabase(app);
+
+  
 
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, isFormValid, errors, username, setUsername,}) => {
   return ( 
@@ -62,12 +69,12 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
           secureTextEntry={true}
         />
 
-        </TouchableWithoutFeedback>
 
-        <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>     
-        <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
-          <Text onPress={handleAuthentication} className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
-        </Pressable>
+      <Text className='text-sm text-red-500 mt-2'>{errors.email}</Text>    
+      <Pressable className={`w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center ${isFormValid ? 'bg-[#344E41] ' : 'bg-[#344E41]/80'}`} onPress={handleAuthentication} disabled={!isFormValid}> 
+        <Text className='text-white'>{isLogin ? 'Sign In' : 'Sign Up'}</Text>  
+      </Pressable>
+
 
         <View className='mx-auto'>
           <Text onPress={() => setIsLogin(!isLogin)} className='text-lg tracking-tighter font-bold text-[#344E41] mt-2 mr-auto text-left cursor-pointer'>
@@ -149,17 +156,35 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
   );      
 }
 
-const AuthenticatedScreen = ({ user, handleAuthentication }) => {
+const HomeScreen = () => {
   return (
-    <View >
-      <Text>Welcome</Text>
-      <Text>{user.email}</Text>
-      <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
+    <View className='flex flex-col h-screen bg-[#FFFFFF] p-8 relative'>       
+        <View className='flex flex-row items-center justify-between w-full mt-10 '>
+          <Text className='text-4xl italic -tracking-[1.5em] font-bold text-[#344E41] text-left'>Habitat</Text>            
+          <Menu className='text-[#344E41]' strokeWidth={2} size={32}   />       
+        </View> 
     </View>
   );
 };
 
-export default App = () => {
+
+const AuthenticatedScreen = ({ user, handleAuthentication }) => {
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> 
+      <View className='h-screen '>        
+        
+
+        <Tab.Navigator className='w-full h-12 bg-[#344E41] shadow rounded-lg mt-4 flex items-center justify-center' screenOptions={{headerShown: false}}> 
+          <Tab.Screen name="Garden" component={HomeScreen} options={{ tabBarLabel: 'Garden', tabBarIcon: ({ color, size }) => (<Flower color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Habits" component={HomeScreen} options={{ tabBarLabel: 'Habits', tabBarIcon: ({ color, size }) => (<Leaf color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+          <Tab.Screen name="Friends" component={HomeScreen} options={{ tabBarLabel: 'Friends', tabBarIcon: ({ color, size }) => (<Users color={color} strokeWidth={2} size={size} />), tabBarActiveTintColor: '#344E41',  tabBarInactiveTintColor: '#8E8E8F' }} />
+        </Tab.Navigator>   
+      </View>
+    </TouchableWithoutFeedback>    
+  );
+};  
+
+export default App = () => { 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -174,7 +199,7 @@ export default App = () => {
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth]); 
 
   useEffect(() => {   
     validateForm(); 
@@ -229,17 +254,17 @@ export default App = () => {
       console.error('Authentication error:', error.message);
     }
   };
-
   const checkUsernameExists = async (username) => {
     const dbRef = ref(getDatabase());
     const snapshot = await get(child(dbRef, `usernames/${username}`));
     return snapshot.exists();
   };
 
+
   return (
-    <View>
+    <NavigationContainer>
       
-      {user ? (
+      {user ? (  
         // Show user's email if user is authenticated
         <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
       ) : (
@@ -257,7 +282,7 @@ export default App = () => {
           isFormValid={isFormValid}
           errors={errors}
         />
-      )}
-    </View>   
+      )} 
+    </NavigationContainer>
   );
 }
